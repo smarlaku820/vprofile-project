@@ -1,11 +1,11 @@
 version: 0.2
 env:
   parameter-store:
-    LOGIN: LOGIN
+    LOGIN: sonartoken
     HOST: HOST
     Organization: Organization
     Project: Project
-    CODEARTIFACT_AUTH_TOKEN: CODEARTIFACT_AUTH_TOKEN
+    CODEARTIFACT_AUTH_TOKEN: codeartifact-token
 phases:
   install:
     runtime-versions:
@@ -25,7 +25,15 @@ phases:
   build:
     commands:
       - mvn test
-      - mvn checkstyle:checkstyle     
+      - mvn checkstyle:checkstyle
+      - echo "Installing Jdk11 as its a dependency for sonarqube code analysis"
+      - apt-get install -y openjdk-11-jdk
+      - export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+      - ls /usr/lib/jvm/java-11-openjdk-amd64
+      - export PATH=$JAVA_HOME/bin:$PATH
+      - echo $PATH
+      - which java
+      - echo $JAVA_HOME
       - mvn sonar:sonar -Dsonar.login=$LOGIN -Dsonar.host.url=$HOST -Dsonar.projectKey=$Project -Dsonar.organization=$Organization -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ -Dsonar.junit.reportsPath=target/surefire-reports/ -Dsonar.jacoco.reportsPath=target/jacoco.exec -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
       - sleep 5
       - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$Project >result.json
