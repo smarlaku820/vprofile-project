@@ -1,0 +1,41 @@
+{
+    "Version": "2008-10-17",
+    "Id": "__default_policy_ID",
+    "Statement": [
+      {
+        "Sid": "__default_statement_ID",
+        "Effect": "Allow",
+        "Principal": {
+          "AWS": "*"
+        },
+        "Action": [
+          "SNS:GetTopicAttributes",
+          "SNS:SetTopicAttributes",
+          "SNS:AddPermission",
+          "SNS:RemovePermission",
+          "SNS:DeleteTopic",
+          "SNS:Subscribe",
+          "SNS:ListSubscriptionsByTopic",
+          "SNS:Publish",
+          "SNS:Receive"
+        ],
+        "Resource": "arn:aws:sns:us-east-1:629945722572:awsSnS_to_slack",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceOwner": "629945722572"
+          }
+        }
+      },
+      {
+        "Sid": "AWS_codepipeline_notifications_publish",
+        "Effect": "Allow",
+        "Principal": {
+          "Service": [
+            "codestar-notifications.amazonaws.com"
+          ]
+        },
+        "Action": "SNS:Publish",
+        "Resource": "arn:aws:sns:us-east-1:629945722572:awsSnS_to_slack"
+      }
+    ]
+  }
